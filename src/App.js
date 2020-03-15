@@ -1,8 +1,8 @@
-import React, { useContext, memo } from "react";
-import { Context } from "./context";
+import React, { memo } from "react";
+import { useContextProvider, connectContext } from "./context";
 
 const Navigation = memo(() => {
-  const [, dispatch] = useContext(Context);
+  const [, dispatch] = useContextProvider();
   console.log(`Navigation Render`);
   return (
     <div>
@@ -11,11 +11,12 @@ const Navigation = memo(() => {
       <button onClick={() => dispatch({ type: "RECOMMENDED" })}>
         RECOMMENDED
       </button>
+      <button onClick={() => dispatch({ type: "MYLIST" })}>MY LIST</button>
     </div>
   );
 });
 const Latest = () => {
-  const [{ latest }] = useContext(Context);
+  const [{ latest }] = useContextProvider();
   console.log(`Latest Render`);
   return (
     <div>
@@ -29,7 +30,7 @@ const Latest = () => {
   );
 };
 const Trending = () => {
-  const [{ trending }] = useContext(Context);
+  const [{ trending }] = useContextProvider();
   console.log(`Trending Render`);
   return (
     <>
@@ -43,7 +44,7 @@ const Trending = () => {
   );
 };
 const Recommended = () => {
-  const [{ recommended }] = useContext(Context);
+  const [{ recommended }] = useContextProvider();
   console.log(`Recommended Render`);
   return (
     <>
@@ -57,20 +58,31 @@ const Recommended = () => {
   );
 };
 
+const MyList = () => {
+  const [{ mylist }] = useContextProvider();
+  console.log(`MyList Render`);
+  return (
+    <>
+      <h3>My List</h3>
+      <div>
+        {mylist.map((r, i) => (
+          <p key={i}>{r.name}</p>
+        ))}
+      </div>
+    </>
+  );
+};
 export default () => {
-  const [{ view }] = useContext(Context);
+  const [{ view }] = useContextProvider();
   return (
     <>
       <h1>FakeFlix</h1>
       <Navigation />
-      {/*
-      <Recommended />
-      <Trending />
-      <Latest /> */}
       {view.cata({
         RECOMMENDED: () => <Recommended />,
         TRENDING: () => <Trending />,
-        LATEST: () => <Latest />
+        LATEST: () => <Latest />,
+        MYLIST: () => <MyList />
       })}
     </>
   );

@@ -1,10 +1,11 @@
-import React, { createContext, useReducer } from "react";
+import React, { createContext, useReducer, useContext, useMemo } from "react";
 import { taggedSum } from "daggy";
 
 const VIEW = taggedSum("VIEW", {
   RECOMMENDED: [],
   LATEST: [],
-  TRENDING: []
+  TRENDING: [],
+  MYLIST: []
 });
 
 const INITIAL_STATE = {
@@ -24,6 +25,11 @@ const INITIAL_STATE = {
     { name: "Letterkenny" },
     { name: "McGyver" },
     { name: "The Simpsons Movie" }
+  ],
+  mylist: [
+    { name: "The Running Man" },
+    { name: "Water World" },
+    { name: "The Watchmen" }
   ]
 };
 
@@ -44,6 +50,11 @@ const reducer = (state, action) => {
         ...state,
         view: VIEW.RECOMMENDED
       };
+    case "MYLIST":
+      return {
+        ...state,
+        view: VIEW.MYLIST
+      };
     default:
       throw new Error();
   }
@@ -57,4 +68,10 @@ export const ContextProvider = ({ children }) => {
   return (
     <Context.Provider value={[state, dispatch]}>{children}</Context.Provider>
   );
+};
+
+export const useContextProvider = () => {
+  const [state, dispatch] = useContext(Context);
+
+  return useMemo(() => [state, dispatch], [state, dispatch]);
 };
